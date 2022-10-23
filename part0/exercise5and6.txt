@@ -1,0 +1,32 @@
+                                                                                  exercise5.txt                                                                                              
+browser->server: GET https://studies.cs.helsinki.fi/exampleapp/spa
+server-->browser: HTML-code
+
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.css
+server-->browser: main.css
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/spa.js
+server-->browser: spa.js
+
+note over browser:
+browser starts executing js-code
+that executes the redraw notes function
+end note
+
+browser->server: GET https://studies.cs.helsinki.fi/favicon.ico
+server-->browser: HTML code
+
+
+note over browser:
+browser creates a new message the same way as before,
+this time only one HTTP POST request is made
+end note
+
+
+browser->server: POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+
+note over browser:
+Content-type: application/json
+{"content":"sss","date":"2022-10-17T14:12:01.860Z"}
+end note
+
+server-->browser: HTTP status code 201 created
