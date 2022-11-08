@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Filter, PersonForm, Persons } from './components/Persons'
+import { Filter, PersonForm, Persons, Notification } from './components/Persons'
 import personService from './services/persons'
 
 const App = () => {
@@ -7,6 +7,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
+  const [errorMessage, setErrorMessage] = useState({message: 'some error message...', errorFlag: true})
 
   useEffect(() => {
     personService
@@ -15,6 +16,13 @@ const App = () => {
         setPersons(allEntries)
       })
   }, [])
+
+  useEffect(() => {
+    const timeId = setTimeout(() => {
+      setErrorMessage(null)
+    }, 3000)
+    return () => clearTimeout(timeId)
+  })
 
   const addEntry = (event) => {
     event.preventDefault()
@@ -33,6 +41,11 @@ const App = () => {
           .then(updatedPerson => {
             setPersons(persons.map(person => person.name !== newName ? person : updatedPerson))
           })
+          .catch(error => {
+            setPersons(persons.filter(person => person.id !== p_id))
+            setErrorMessage({message: `Information of ${newName} has already been removed from the server`, errorFlag: true})
+          })
+        setErrorMessage({message: `Updated ${newName}`, errorFlag: false})
       }
       return
     }
@@ -44,6 +57,8 @@ const App = () => {
         setNewName('')
         setNewNumber('')
       })
+    
+    setErrorMessage({message: `Added ${newName}`, errorFlag: false})
   }
 
   const handleDeleteOf = (id) => {
@@ -56,6 +71,7 @@ const App = () => {
       .then(response => {
         console.log(response)
         setPersons(persons.filter(person => person.id !== id))
+        setErrorMessage({message: `Deleted ${personToDelete.name}`, errorFlag: false})
       })
       .catch(error => {
         console.log(error)
@@ -81,6 +97,8 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={errorMessage} />
+
       <Filter value={filter} onChange={handleFilterChange}/>
 
       <h2>Add a new</h2>
