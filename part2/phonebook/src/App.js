@@ -19,16 +19,24 @@ const App = () => {
   const addEntry = (event) => {
     event.preventDefault()
    
-    const alreadyExists = (element) => element.name === newName
-    if (persons.some(alreadyExists)) {
-      alert(`${newName} is already added to phonebook`)
-      return
-    }
-
     const personObject = {
       name: newName,
       number: newNumber,
     }
+
+    const alreadyExists = (element) => element.name === newName
+    if (persons.some(alreadyExists)) {
+      if (window.confirm(`${personObject.name} is already added to the phonebook, replace the old number with a new one?`)) {
+        const p_id = persons.find(p => p.name === newName).id
+        personService
+          .update(p_id, personObject)
+          .then(updatedPerson => {
+            setPersons(persons.map(person => person.name !== newName ? person : updatedPerson))
+          })
+      }
+      return
+    }
+
     personService
       .create(personObject)
       .then(phonebook => {
