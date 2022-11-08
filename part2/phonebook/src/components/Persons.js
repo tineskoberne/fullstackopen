@@ -1,9 +1,16 @@
-const Entry = ({person}) => <li>{person.name} : {person.number}</li>
+const Entry = ({person, handleDeleteOf}) => {
+  return (
+    <li>
+      {person.name} : {person.number}
+      <button onClick={() => handleDeleteOf(person.id)}>delete</button>
+    </li>
+  )
+}
 
-export const Persons = ({persons}) => {
+export const Persons = ({persons, handleDeleteOf}) => {
   return (
     <ul>
-      {persons.map((person) => <Entry key={person.id} person={person}/>)}
+      {persons.map((person) => <Entry key={person.id} person={person} handleDeleteOf={handleDeleteOf}/>)}
     </ul>
   )
 }
